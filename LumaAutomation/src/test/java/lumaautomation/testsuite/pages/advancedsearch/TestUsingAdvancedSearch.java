@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import lumaautomation.behaviors.utility.LogTest;
-import lumaautomation.behaviors.navigation.AwaitNavigationFor;
+import lumaautomation.behaviors.navigation.AwaitFor;
 import lumaautomation.behaviors.navigation.LaunchTo;
 import lumaautomation.behaviors.popups.HandlePrivacyPolicyPopup;
 import lumaautomation.behaviors.search.DoAdvancedSearch;
@@ -34,7 +34,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
         user.can(BrowseTheWeb.with(driver));
         user.attemptsTo(
                 LaunchTo.theLumaAdvancedSearchPage(),
-                AwaitNavigationFor.thePageWithTitleToLoad(LumaAdvancedSearchPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(LumaAdvancedSearchPage.PAGE_TITLE),
                 HandlePrivacyPolicyPopup.selectingDisagree(),
                 LogTest.Log("Pre-Test Steps Completed.")
         );
@@ -45,7 +45,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductName() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductName(testProductName),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
                 LogTest.Log("Validating Simple Search Results UI"),
                 LogTest.Log("Validating Content Title").then(Ensure.that(AdvancedSearchResultsPage.CONTENT_TITLE).textContent().contains(AdvancedSearchResultsPage.PAGE_CONTENT_TITLE)),
                 LogTest.Log("Validating Side Bar Compare Widget").then(Ensure.that(AdvancedSearchResultsPage.SIDE_BAR_COMPARE).isDisplayed()),
@@ -58,7 +58,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductSku() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductSKU(testProductSKU),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
     }
 
@@ -67,7 +67,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductDescription() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductDescription(testProductDescription),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
     }
 
@@ -76,7 +76,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductShortDescription() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductShortDescription(testProductShortDescription),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
     }
 
@@ -85,7 +85,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductMinPrice() {
         user.attemptsTo(
                 DoAdvancedSearch.WithMinPrice(testProductMinPrice),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
     }
 
@@ -94,7 +94,7 @@ public class TestUsingAdvancedSearch extends BaseTestCase {
     void searchByProductMaxPrice() {
         user.attemptsTo(
                 DoAdvancedSearch.WithMaxPrice(testProductMaxPrice),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
     }
 }

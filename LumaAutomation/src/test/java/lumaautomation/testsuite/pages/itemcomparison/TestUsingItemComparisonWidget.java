@@ -8,11 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import lumaautomation.behaviors.fetch.DoItemCompareWidgetFetch;
-import lumaautomation.behaviors.fetch.DoItemListingFetch;
+import lumaautomation.behaviors.at.AtCompareItemsListWidget;
+import lumaautomation.behaviors.at.AtProductListTable;
 import lumaautomation.behaviors.popups.HandleConfirmClearPopup;
 import lumaautomation.behaviors.utility.LogTest;
-import lumaautomation.behaviors.navigation.AwaitNavigationFor;
+import lumaautomation.behaviors.navigation.AwaitFor;
 import lumaautomation.behaviors.navigation.LaunchTo;
 import lumaautomation.behaviors.popups.HandlePrivacyPolicyPopup;
 import lumaautomation.behaviors.search.DoSimpleSearch;
@@ -36,7 +36,7 @@ public class TestUsingItemComparisonWidget extends BaseTestCase {
         user.can(BrowseTheWeb.with(driver));
         user.attemptsTo(
                 LaunchTo.theLumaHomePage(),
-                AwaitNavigationFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
                 HandlePrivacyPolicyPopup.selectingDisagree(),
                 LogTest.Log("Pre-Test Steps Completed.")
         );
@@ -49,12 +49,12 @@ public class TestUsingItemComparisonWidget extends BaseTestCase {
         user.attemptsTo(
                 LogTest.Log("Search for a test product using simple search"),
                 DoSimpleSearch.WithSimpleSearchBar(testProduct),
-                AwaitNavigationFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
+                AwaitFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
                 LogTest.Log("Validating Content Title").then(Ensure.that(SimpleSearchResultsPage.CONTENT_TITLE).textContent().contains(SimpleSearchResultsPage.getPageTitle(testProduct)))
         );
 
         // From the results of the search, add two random products to the Compare List Widget.
-        int productsDisplayed = user.asksFor(DoItemListingFetch.forNumberOfProducts());
+        int productsDisplayed = user.asksFor(AtProductListTable.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log("Validate Item Product Count is greater than 0")
                         .then(Ensure.that(productsDisplayed).isGreaterThan(0)));
@@ -68,13 +68,13 @@ public class TestUsingItemComparisonWidget extends BaseTestCase {
             alreadySelected.add(randomNum);
             user.attemptsTo(
                     LogTest.Log(String.format("Adding Product %d to Compare List", randomNum)),
-                    DoItemListingFetch.clickAddToCompare(randomNum),
-                    AwaitNavigationFor.thePageWithTitleToLoadTarget(SimpleSearchResultsPage.getPageTitle(testProduct), CompareItemsWidget.getCompareWidgetClearButton())
+                    AtProductListTable.clickAddToCompare(randomNum),
+                    AwaitFor.thePageWithTitleToLoadTarget(SimpleSearchResultsPage.getPageTitle(testProduct), CompareItemsWidget.getCompareWidgetClearButton())
             );
         }
 
         // Validate n-items were selected.
-        int itemsInCompare = user.asksFor(DoItemCompareWidgetFetch.forNumberOfProducts());
+        int itemsInCompare = user.asksFor(AtCompareItemsListWidget.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log(String.format("Validate the Compare List has %d Items", numberOfProductsToAdd)).then(Ensure.that(itemsInCompare).isEqualTo(numberOfProductsToAdd))); // <-- two items were added to the list.
     }
@@ -88,15 +88,15 @@ public class TestUsingItemComparisonWidget extends BaseTestCase {
         // Clear the Compare Items Widget List.
         user.attemptsTo(
                 LogTest.Log("Clicking the Clear All Button in Compare List"),
-                DoItemCompareWidgetFetch.clickClearAll(),
-                AwaitNavigationFor.thePageToLoadTarget(ClearCompareListPopupForm.getOkayButton()),
+                AtCompareItemsListWidget.clickClearAll(),
+                AwaitFor.thePageToLoadTarget(ClearCompareListPopupForm.getOkayButton()),
                 HandleConfirmClearPopup.selectingOK(),
-                AwaitNavigationFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
+                AwaitFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
                 LogTest.Log("Validating Content Title").then(Ensure.that(SimpleSearchResultsPage.CONTENT_TITLE).textContent().contains(SimpleSearchResultsPage.getPageTitle(testProduct)))
         );
 
         // Validate list is empty.
-        int clearedItemCount = user.asksFor(DoItemCompareWidgetFetch.forNumberOfProducts());
+        int clearedItemCount = user.asksFor(AtCompareItemsListWidget.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log("Validate the Compare List is Empty").then(Ensure.that(clearedItemCount).isEqualTo(0))); // <-- two items were cleared from the list
     }
@@ -109,20 +109,20 @@ public class TestUsingItemComparisonWidget extends BaseTestCase {
         canSearchBySimpleProductAndAddToCompare();
 
         // Select a random product to remove.
-        int selectRandomProduct = ThreadLocalRandom.current().nextInt(1, user.asksFor(DoItemCompareWidgetFetch.forNumberOfProducts()) + 1);
+        int selectRandomProduct = ThreadLocalRandom.current().nextInt(1, user.asksFor(AtCompareItemsListWidget.forNumberOfProducts()) + 1);
 
         // Attempt to remove the product.
         user.attemptsTo(
                 LogTest.Log(String.format("Clicking the remove button on Product %d in Compare List", selectRandomProduct)),
-                DoItemCompareWidgetFetch.clickRemove(selectRandomProduct),
-                AwaitNavigationFor.thePageToLoadTarget(ClearCompareListPopupForm.getOkayButton()),
+                AtCompareItemsListWidget.clickRemove(selectRandomProduct),
+                AwaitFor.thePageToLoadTarget(ClearCompareListPopupForm.getOkayButton()),
                 HandleConfirmClearPopup.selectingOK(),
-                AwaitNavigationFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
+                AwaitFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
                 LogTest.Log("Validating Content Title").then(Ensure.that(SimpleSearchResultsPage.CONTENT_TITLE).textContent().contains(SimpleSearchResultsPage.getPageTitle(testProduct)))
         );
 
         // Validate item was removed.
-        int clearedItemCount = user.asksFor(DoItemCompareWidgetFetch.forNumberOfProducts());
+        int clearedItemCount = user.asksFor(AtCompareItemsListWidget.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log(String.format("Validate the Compare List has %d products", endListSize)).then(Ensure.that(clearedItemCount).isEqualTo(endListSize)));
     }

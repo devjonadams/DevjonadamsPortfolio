@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
-import lumaautomation.behaviors.fetch.DoItemListingFetch;
+import lumaautomation.behaviors.at.AtProductListTable;
 import lumaautomation.behaviors.utility.LogTest;
-import lumaautomation.behaviors.navigation.AwaitNavigationFor;
+import lumaautomation.behaviors.navigation.AwaitFor;
 import lumaautomation.behaviors.navigation.LaunchTo;
 import lumaautomation.behaviors.popups.HandlePrivacyPolicyPopup;
 import lumaautomation.behaviors.search.DoAdvancedSearch;
@@ -40,7 +40,7 @@ public class TestAdvancedSearchAndSort extends BaseTestCase {
         // Launch the Advanced Search Page.
         user.attemptsTo(
                 LaunchTo.theLumaAdvancedSearchPage(),
-                AwaitNavigationFor.thePageWithTitleToLoad(LumaAdvancedSearchPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(LumaAdvancedSearchPage.PAGE_TITLE),
                 HandlePrivacyPolicyPopup.selectingDisagree(),
                 LogTest.Log("Pre-Test Steps Completed.")
         );
@@ -52,19 +52,19 @@ public class TestAdvancedSearchAndSort extends BaseTestCase {
     void searchAndSortByProductNameAtoZ() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductName(testProductName),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
                 LogTest.Log("Validating Content Title").then(Ensure.that(AdvancedSearchResultsPage.CONTENT_TITLE).textContent().contains(AdvancedSearchResultsPage.PAGE_CONTENT_TITLE)),
                 DoSort.byProductName(),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
-        int productsDisplayed = user.asksFor(DoItemListingFetch.forNumberOfProducts());
+        int productsDisplayed = user.asksFor(AtProductListTable.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log("Validate Item Product Count is greater than 0")
                         .then(Ensure.that(productsDisplayed).isGreaterThan(0)));
 
-        String previousProductName = user.asksFor(DoItemListingFetch.forProductName(1));
+        String previousProductName = user.asksFor(AtProductListTable.forProductName(1));
         for (int i = 1; i <= productsDisplayed; i++) {
-            String currentProductName = user.asksFor(DoItemListingFetch.forProductName(i));
+            String currentProductName = user.asksFor(AtProductListTable.forProductName(i));
             user.attemptsTo(
                     LogTest.Log(String.format("Validate Item %d Name [%s] is in order to [%s]", i, previousProductName, currentProductName))
                             .then(Ensure.that(previousProductName.compareToIgnoreCase(currentProductName)).isLessThanOrEqualTo(0)));
@@ -77,21 +77,21 @@ public class TestAdvancedSearchAndSort extends BaseTestCase {
     void searchAndSortByProductNameZtoA() {
         user.attemptsTo(
                 DoAdvancedSearch.WithProductName(testProductName),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
                 LogTest.Log("Validating Content Title").then(Ensure.that(AdvancedSearchResultsPage.CONTENT_TITLE).textContent().contains(AdvancedSearchResultsPage.PAGE_CONTENT_TITLE)),
                 DoSort.byProductName(),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE),
                 DoSort.invertSorting(),
-                AwaitNavigationFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
+                AwaitFor.thePageWithTitleToLoad(AdvancedSearchResultsPage.PAGE_TITLE)
         );
-        int productsDisplayed = user.asksFor(DoItemListingFetch.forNumberOfProducts());
+        int productsDisplayed = user.asksFor(AtProductListTable.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log("Validate Item Product Count is greater than 0")
                         .then(Ensure.that(productsDisplayed).isGreaterThan(0)));
 
-        String previousProductName = user.asksFor(DoItemListingFetch.forProductName(1));
+        String previousProductName = user.asksFor(AtProductListTable.forProductName(1));
         for (int i = 1; i <= productsDisplayed; i++) {
-            String currentProductName = user.asksFor(DoItemListingFetch.forProductName(i));
+            String currentProductName = user.asksFor(AtProductListTable.forProductName(i));
             user.attemptsTo(
                     LogTest.Log(String.format("Validate Item %d Name [%s] is in order to [%s]", i, previousProductName, currentProductName))
                             .then(Ensure.that(previousProductName.compareToIgnoreCase(currentProductName)).isGreaterThanOrEqualTo(0)));
