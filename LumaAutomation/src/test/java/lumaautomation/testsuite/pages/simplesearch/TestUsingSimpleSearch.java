@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import lumaautomation.behaviors.utility.LogTest;
-import lumaautomation.behaviors.navigation.AwaitNavigationFor;
+import lumaautomation.behaviors.navigation.AwaitFor;
 import lumaautomation.behaviors.navigation.LaunchTo;
 import lumaautomation.behaviors.popups.HandlePrivacyPolicyPopup;
 import lumaautomation.behaviors.search.DoSimpleSearch;
@@ -27,7 +27,7 @@ public class TestUsingSimpleSearch extends BaseTestCase {
         user.can(BrowseTheWeb.with(driver));
         user.attemptsTo(
                 LaunchTo.theLumaHomePage(),
-                AwaitNavigationFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
                 HandlePrivacyPolicyPopup.selectingDisagree(),
                 LogTest.Log("Pre-Test Steps Completed.")
         );
@@ -38,7 +38,7 @@ public class TestUsingSimpleSearch extends BaseTestCase {
     void canSearchBySimpleProductText() {
         user.attemptsTo(
                 DoSimpleSearch.WithSimpleSearchBar(testProduct),
-                AwaitNavigationFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
+                AwaitFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
                 LogTest.Log("Validating Simple Search Results UI"),
                 LogTest.Log("Validating Content Title").then(Ensure.that(SimpleSearchResultsPage.CONTENT_TITLE).textContent().contains(SimpleSearchResultsPage.getPageTitle(testProduct))),
                 LogTest.Log("Validating Side Bar Compare Widget").then(Ensure.that(SimpleSearchResultsPage.SIDE_BAR_COMPARE).isDisplayed()),

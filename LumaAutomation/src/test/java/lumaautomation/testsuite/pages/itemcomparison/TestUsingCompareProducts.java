@@ -1,19 +1,16 @@
 package lumaautomation.testsuite.pages.itemcomparison;
 
-import groovy.lang.Tuple3;
-import lumaautomation.behaviors.fetch.DoItemComparePageFetch;
-import lumaautomation.behaviors.fetch.DoItemCompareWidgetFetch;
-import lumaautomation.behaviors.fetch.DoItemListingFetch;
-import lumaautomation.behaviors.navigation.AwaitNavigationFor;
+import lumaautomation.behaviors.at.AtItemComparePage;
+import lumaautomation.behaviors.at.AtCompareItemsListWidget;
+import lumaautomation.behaviors.at.AtProductListTable;
+import lumaautomation.behaviors.navigation.AwaitFor;
 import lumaautomation.behaviors.navigation.LaunchTo;
-import lumaautomation.behaviors.popups.HandleConfirmClearPopup;
 import lumaautomation.behaviors.popups.HandlePrivacyPolicyPopup;
 import lumaautomation.behaviors.search.DoSimpleSearch;
 import lumaautomation.behaviors.utility.DoHelper;
 import lumaautomation.behaviors.utility.LogTest;
 import lumaautomation.pages.compare.CompareItemsWidget;
 import lumaautomation.pages.compare.LumaCompareItemsPage;
-import lumaautomation.pages.popups.ClearCompareListPopupForm;
 import lumaautomation.pages.search.SimpleSearchResultsPage;
 import lumaautomation.pages.site.LumaHomePage;
 import lumaautomation.testsuite.BaseTestCase;
@@ -30,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
 @ExtendWith(SerenityJUnit5Extension.class)
 @Description("This Test Suite provides coverage to the Item Comparison Widget and the Item Comparison Page.")
@@ -43,7 +39,7 @@ public class TestUsingCompareProducts extends BaseTestCase {
         user.can(BrowseTheWeb.with(driver));
         user.attemptsTo(
                 LaunchTo.theLumaHomePage(),
-                AwaitNavigationFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
+                AwaitFor.thePageWithTitleToLoad(LumaHomePage.PAGE_TITLE),
                 HandlePrivacyPolicyPopup.selectingDisagree(),
                 LogTest.Log("Pre-Test Steps Completed.")
         );
@@ -56,12 +52,12 @@ public class TestUsingCompareProducts extends BaseTestCase {
         user.attemptsTo(
                 LogTest.Log("Search for a test product using simple search"),
                 DoSimpleSearch.WithSimpleSearchBar(testProduct),
-                AwaitNavigationFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
+                AwaitFor.thePageWithTitleToLoad(SimpleSearchResultsPage.getPageTitle(testProduct)),
                 LogTest.Log("Validating Content Title").then(Ensure.that(SimpleSearchResultsPage.CONTENT_TITLE).textContent().contains(SimpleSearchResultsPage.getPageTitle(testProduct)))
         );
 
         // From the results of the search, add two random products to the Compare List Widget.
-        int productsDisplayed = user.asksFor(DoItemListingFetch.forNumberOfProducts());
+        int productsDisplayed = user.asksFor(AtProductListTable.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log("Validate Item Product Count is greater than 0")
                         .then(Ensure.that(productsDisplayed).isGreaterThan(0)));
@@ -75,13 +71,13 @@ public class TestUsingCompareProducts extends BaseTestCase {
             alreadySelected.add(randomNum);
             user.attemptsTo(
                     LogTest.Log(String.format("Adding Product %d to Compare List", randomNum)),
-                    DoItemListingFetch.clickAddToCompare(randomNum),
-                    AwaitNavigationFor.thePageWithTitleToLoadTarget(SimpleSearchResultsPage.getPageTitle(testProduct), CompareItemsWidget.getCompareWidgetClearButton())
+                    AtProductListTable.clickAddToCompare(randomNum),
+                    AwaitFor.thePageWithTitleToLoadTarget(SimpleSearchResultsPage.getPageTitle(testProduct), CompareItemsWidget.getCompareWidgetClearButton())
             );
         }
 
         // Validate n-items were selected.
-        int itemsInCompare = user.asksFor(DoItemCompareWidgetFetch.forNumberOfProducts());
+        int itemsInCompare = user.asksFor(AtCompareItemsListWidget.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log(String.format("Validate the Compare List has %d Items", numberOfProductsToAdd)).then(Ensure.that(itemsInCompare).isEqualTo(numberOfProductsToAdd))); // <-- two items were added to the list.
     }
@@ -95,13 +91,13 @@ public class TestUsingCompareProducts extends BaseTestCase {
         // Navigate to the Compare Items Page.
         user.attemptsTo(
                 LogTest.Log("Clicking the Compare Button"),
-                DoItemCompareWidgetFetch.clickCompare(),
-                AwaitNavigationFor.thePageToLoadTarget(LumaCompareItemsPage.getContentTitle()),
+                AtCompareItemsListWidget.clickCompare(),
+                AwaitFor.thePageToLoadTarget(LumaCompareItemsPage.getContentTitle()),
                 LogTest.Log("Validating Content Title").then(Ensure.that(LumaCompareItemsPage.getContentTitle()).textContent().contains(LumaCompareItemsPage.CONTENT_TITLE_TEXT))
         );
 
         // Validate Table is populated.
-        int displayedProductCount = user.asksFor(DoItemComparePageFetch.forNumberOfProducts());
+        int displayedProductCount = user.asksFor(AtItemComparePage.forNumberOfProducts());
         user.attemptsTo(
                 LogTest.Log(String.format("Validate the Displayed Number of Products is %d", numberOfProductsToAdd)).then(Ensure.that(displayedProductCount).isEqualTo(numberOfProductsToAdd)));
     }
@@ -113,14 +109,14 @@ public class TestUsingCompareProducts extends BaseTestCase {
         canAccessCompareProducts();
 
         // Get total number of items displayed.
-        int displayedProductCount = user.asksFor(DoItemComparePageFetch.forNumberOfProducts());
+        int displayedProductCount = user.asksFor(AtItemComparePage.forNumberOfProducts());
 
         // Get the data from each product.
         ArrayList<Triple> productSet = new ArrayList<>();
         for (int i = 1; i <= displayedProductCount; ++i) {
-            String productName = user.asksFor(DoItemComparePageFetch.forProductName(i));
-            String productSKU = user.asksFor(DoItemComparePageFetch.forProductSKU(i));
-            String productDesc = user.asksFor(DoItemComparePageFetch.forProductDescription(i));
+            String productName = user.asksFor(AtItemComparePage.forProductName(i));
+            String productSKU = user.asksFor(AtItemComparePage.forProductSKU(i));
+            String productDesc = user.asksFor(AtItemComparePage.forProductDescription(i));
             productSet.add(Triple.of(productName, productSKU, productDesc));
         }
 
