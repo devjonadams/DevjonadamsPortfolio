@@ -1,4 +1,31 @@
-5251977
+23 Mere
+244Core
+Aaeton
+Aaghra
+Aar
+Aargau
+Aargonar
+Aaris III
+Abafar
+Abanol
+Abatrang
+Abbaji
+Ab'Bshingh
+Abhean
+Abo Dreth
+Abonshee
+Abraxas
+Abraxin
+Abregado-dai
+Abregado-fus
+Abregado-rae
+Abregado-san
+Abregado-taki
+Abridon
+Abrion Major
+Absit
+Abyssissa
+
 Atterra Bravo
 Atterra Primo
 Aubadas
@@ -79,7 +106,6 @@ Burnin Konn
 Bursant
 Byss
 Cabarria
-Cademimu
 Cadomai Prime
 Calcoraan
 Calior
